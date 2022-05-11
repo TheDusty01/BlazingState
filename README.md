@@ -8,7 +8,9 @@ Download the latest release from [NuGet](https://www.nuget.org/packages/BlazingS
 
 ## Usage
 ### Registering state observers
-Start by registering your tracked type to your services:
+Start by registering your tracked type to your services.
+
+**Note:** You can only register **1 state observer per type**.
 ```csharp
 // Sample class for the examples
 public class MyData
