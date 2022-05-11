@@ -1,0 +1,41 @@
+﻿<div class="row">
+	<h3>ManageCompanyInfo</h3>
+
+	<p>Name: @CompanyInfo.Value?.Name</p>
+
+	<div class="row">
+		<div class="col-auto">
+			<input type="text" @bind="newCompanyName">
+		</div>
+		<div class="col-auto">
+			<button class="btn btn-primary mb-3" @onclick="Save">Save</button>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Inject]
+	protected StateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+	private string newCompanyName = "";
+
+	protected override void OnParametersSet()
+	{
+		newCompanyName = CompanyInfo.Value?.Name ?? "";
+		CompanyInfo.Register(this, () =>
+		{
+			Console.WriteLine($"[{nameof(ManageCompanyInfo)}] State changed");
+			newCompanyName = CompanyInfo.Value?.Name ?? "";
+
+			StateHasChanged();
+		});
+	}
+
+	private async Task Save()
+	{
+		// Instead of allocating a new instance like this:
+		// CompanyInfo.Value = new CompanyInfo { Name = newCompanyName };
+		// You can just modify the instance and notify all subscribers that you changed the instance
+		CompanyInfo.Value.Name = newCompanyName;
+		await CompanyInfo.NotifyStateChangedAsync();
+	}
+}

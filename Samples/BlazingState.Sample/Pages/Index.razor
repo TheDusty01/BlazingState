@@ -1,0 +1,65 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<p>Comp name: @CompanyInfo.Value?.Name</p>
+
+<div class="row">
+	<div class="col-auto">
+		<input type="text" @bind="newCompanyName">
+	</div>
+	<div class="col-auto">
+        <button class="btn btn-primary mb-3" @onclick="Save">Save</button>
+    </div>
+</div>
+<div class="row">
+	<div class="col-auto">
+		<p>Cached Events: @cachedEvents</p>
+	</div>
+	<div class="col-auto">
+        <button class="btn btn-primary mb-3" @onclick="FetchEvents">Fetch</button>
+    </div>
+</div>
+
+<ManageCompanyInfo />
+
+
+@code {
+	[Inject]
+	protected StateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+
+	private int cachedEvents = 0; 
+	private string newCompanyName = "";
+
+	protected override void OnParametersSet()
+	{
+		newCompanyName = CompanyInfo.Value?.Name ?? "";
+		CompanyInfo.Register(this, () =>
+		{
+			Console.WriteLine("[INDEX] State changed");
+			newCompanyName = CompanyInfo.Value?.Name ?? "";
+
+			StateHasChanged();
+		});
+	}
+
+	private void Save()
+	{
+		CompanyInfo.Value = new CompanyInfo { Name = newCompanyName };
+	}
+
+	private void FetchEvents()
+	{
+		cachedEvents = CompanyInfo.GetSubscriberCount();
+	}
+
+	~Index()
+	{
+		Console.WriteLine("[INDEX] Finalizer");
+	}
+
+}
