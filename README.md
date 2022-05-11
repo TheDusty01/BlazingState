@@ -103,6 +103,35 @@ public async Task UpdateValue(string newValue)
 ```
 This way you don't have to reallocate the object every time which can build up a lot of pressure on GC with bigger objects.
 
+As mentioned at the start you can use an implementation factory for initialization. However sometimes you need to retrieve data from a data source (e.g. some web api) to initialize your value. \
+For that use case you could create your own component like ``InitMyData`` with following code:
+```csharp
+@code {
+	[Inject]
+	protected StateObserver<MyData> MyData { get; set; } = null!;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		// Getting data from server
+		var name = await GetName();
+		MyData.Value = new MyData { SomeString = name };
+	}
+
+	private async Task<string> GetName()
+	{
+		await Task.Delay(2000);
+		return "Name from Server";
+	}
+}
+```
+
+And add this component at the top of your used layout.
+```xml
+<InitMyData />
+```
+
+Obviously you can do the same with non Blazor projects by getting the your observer instance, retrieving the needed data and setting the ``Value`` property of the state observer.
+
 
 ## Sample projects
 More samples can be found in the [Samples directory](/Samples).

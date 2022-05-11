@@ -1,0 +1,17 @@
+﻿@code {
+	[Inject]
+	protected StateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		// Getting data from server
+		var name = await GetName();
+		CompanyInfo.Value = new CompanyInfo { Name = name };
+	}
+
+	private async Task<string> GetName()
+	{
+		await Task.Delay(2000);
+		return "Name from Server";
+	}
+}
