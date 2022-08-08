@@ -19,7 +19,7 @@ AutoState is very simple to use and allows you to write no boilerplate code for 
 You don't need any other code inside your components for updating the state than this (more info in the next sections).
 ```csharp
 @attribute [AutoState]
-@inject StateObserver<MyData> MyData;
+@inject IStateObserver<MyData> MyData;
 @code {
     // ..
 }
@@ -72,9 +72,9 @@ var myStateObserver = new StateObserver<MyData>(initialValue);
 Add the following property to your razor component (or if using a normal class, just use normal di):
 ```csharp
 [Inject]
-protected StateObserver<MyData> MyData { get; set; } = null!;
+protected IStateObserver<MyData> MyData { get; set; } = null!;
 // or
-@inject StateObserver<MyData> MyData
+@inject IStateObserver<MyData> MyData
 ```
 
 Subscribe using the ``OnParametersSet`` lifecycle event in Blazor (or use the ctor for normal classes):
@@ -101,7 +101,7 @@ For AutoState (WebAssembly only): \
 You only need to add the ``AutoStateAttribute`` and the state observer to the class. That's it!
 ```csharp
 @attribute [AutoState]
-@inject StateObserver<MyData> MyData;
+@inject IStateObserver<MyData> MyData;
 @code {
     // ..
 }
@@ -150,7 +150,7 @@ For that use case you could create your own component like ``InitMyData`` with f
 ```csharp
 @code {
     [Inject]
-    protected StateObserver<MyData> MyData { get; set; } = null!;
+    protected IStateObserver<MyData> MyData { get; set; } = null!;
 
     protected override async Task OnParametersSetAsync()
     {
