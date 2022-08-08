@@ -4,9 +4,27 @@ This library provides powerful, robust, fast and yet simple state management wit
 You can use this library for any project, not just with Blazor.
 
 ## Setup
-Download the latest release from [NuGet](https://www.nuget.org/packages/BlazingState).
+Download the latest releases from NuGet.
 
-TODO: TABLE
+| NuGet Package                                                                       | Version | Info                                   |
+|-------------------------------------------------------------------------------------|---------|----------------------------------------|
+| [BlazingState](https://www.nuget.org/packages/BlazingState)                         | 6.1.0   |                                        |
+| [BlazingState.WebAssembly](https://www.nuget.org/packages/BlazingState.WebAssembly) | 6.1.0   | Needed for AutoState (more info below) |
+
+
+### AutoState
+AutoState is very simple to use and allows you to write no boilerplate code for state changes! It automatically notifies your components to rerender if the state has changed. \
+**Be advised that AutoState uses internal framework classes under the hood to provide this functionality which could change with every Blazor update and break AutoState. Use it at your own risk.**
+
+You don't need any other code inside your components for updating the state than this (more info in the next sections).
+```csharp
+@attribute [AutoState]
+@inject StateObserver<MyData> MyData;
+@code {
+    // ..
+}
+```
+
 
 ## Usage
 ### Registering state observers
