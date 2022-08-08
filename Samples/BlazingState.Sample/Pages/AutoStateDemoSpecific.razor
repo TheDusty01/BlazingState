@@ -1,0 +1,36 @@
+﻿@page "/AutoStateDemoSpecific"
+
+<PageTitle>AutoStateDemoSpecific</PageTitle>
+
+<h1>AutoStateDemoSpecific</h1>
+
+<p>Company Name: @CompanyInfo.Value?.Name</p>
+<ManageCompanyInfo />
+
+<hr />
+<p>Account Name: @Account.Value?.Name</p>
+<ManageAccount />
+
+@attribute [AutoState(typeof(CompanyInfo))]
+@code {
+	// AutoState is only managed for this StateObserver
+	[Inject] protected IStateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+	[Inject] protected IStateObserver<Account> Account { get; set; } = null!;
+
+	protected override void OnParametersSet()
+	{
+		Account.Register(this, StateHasChanged);
+	}
+
+	protected new void StateHasChanged()
+	{
+		Console.WriteLine("[AutoStateDemoSpecific] State changed");
+		base.StateHasChanged();
+	}
+
+	~AutoStateDemoSpecific()
+	{
+		Console.WriteLine("[AutoStateDemoSpecific] Finalizer");
+	}
+
+}

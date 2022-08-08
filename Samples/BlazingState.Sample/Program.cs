@@ -1,6 +1,7 @@
 using BlazingState;
 using BlazingState.Sample;
 using BlazingState.Sample.Data;
+using BlazingState.WebAssembly;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -10,6 +11,17 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-builder.Services.AddStateObserver<CompanyInfo>(new CompanyInfo { Name = "InitialName" });
+builder.Services.AddBlazingState()
+    .AddAutoState()
+    .AddStateObserver<CompanyInfo>(new CompanyInfo { Name = "InitialName" })
+    .AddStateObserver<Account>();
 
-await builder.Build().RunAsync();
+
+// Build
+var app = builder.Build();
+
+app.UseAutoState();
+
+
+// Run
+await app.RunAsync();

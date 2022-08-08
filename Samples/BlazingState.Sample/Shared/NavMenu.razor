@@ -25,11 +25,23 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="AutoStateDemoAll">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> AutoStateDemoAll
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="AutoStateDemoSpecific">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> AutoStateDemoSpecific
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
             <a class="nav-link">
                 Name: @CompanyInfo.Value?.Name
             </a>
         </div>
     </nav>
+
+    
 </div>
 
 @code {
@@ -38,7 +50,7 @@
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     [Inject]
-	protected StateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+	protected IStateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
 
 	protected override void OnParametersSet()
 	{        

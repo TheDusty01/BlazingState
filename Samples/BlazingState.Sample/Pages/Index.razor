@@ -6,7 +6,7 @@
 
 Welcome to your new app.
 
-<p>Comp name: @CompanyInfo.Value?.Name</p>
+<p>Company Name: @CompanyInfo.Value?.Name</p>
 
 <div class="row">
 	<div class="col-auto">
@@ -27,10 +27,13 @@ Welcome to your new app.
 
 <ManageCompanyInfo />
 
+<hr />
+<p>Account Name: @Account.Value?.Name</p>
+<ManageAccount />
 
 @code {
-	[Inject]
-	protected StateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+	[Inject] protected IStateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+	[Inject] protected IStateObserver<Account> Account { get; set; } = null!;
 
 	private int cachedEvents = 0; 
 	private string newCompanyName = "";
@@ -40,14 +43,20 @@ Welcome to your new app.
 		newCompanyName = CompanyInfo.Value?.Name ?? "";
 		CompanyInfo.Register(this, () =>
 		{
-			Console.WriteLine("[INDEX] State changed");
 			newCompanyName = CompanyInfo.Value?.Name ?? "";
 
 			StateHasChanged();
 		});
+		Account.Register(this, StateHasChanged);
 	}
 
-	private void Save()
+	protected new void StateHasChanged()
+	{
+		Console.WriteLine("[INDEX] State changed");
+		base.StateHasChanged();
+	}
+
+	private async Task Save()
 	{
 		CompanyInfo.Value = new CompanyInfo { Name = newCompanyName };
 	}

@@ -1,5 +1,5 @@
 ﻿<div class="row">
-	<h3>ManageCompanyInfo</h3>
+	<h3>ManageCompanyInfo Component</h3>
 
 	<p>Name: @CompanyInfo.Value?.Name</p>
 
@@ -13,21 +13,22 @@
 	</div>
 </div>
 
+@attribute [AutoStateAttribute]
 @code {
 	[Inject]
-	protected StateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+	protected IStateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
 	private string newCompanyName = "";
 
 	protected override void OnParametersSet()
 	{
 		newCompanyName = CompanyInfo.Value?.Name ?? "";
-		CompanyInfo.Register(this, () =>
-		{
-			Console.WriteLine($"[{nameof(ManageCompanyInfo)}] State changed");
-			newCompanyName = CompanyInfo.Value?.Name ?? "";
+		//CompanyInfo.Register(this, () =>
+		//{
+		//	Console.WriteLine($"[{nameof(ManageCompanyInfo)}] State changed");
+		//	newCompanyName = CompanyInfo.Value?.Name ?? "";
 
-			StateHasChanged();
-		});
+		//	StateHasChanged();
+		//});
 	}
 
 	private async Task Save()
@@ -36,6 +37,6 @@
 		// CompanyInfo.Value = new CompanyInfo { Name = newCompanyName };
 		// You can just modify the instance and notify all subscribers that you changed the instance
 		CompanyInfo.Value.Name = newCompanyName;
-		await CompanyInfo.NotifyStateChangedAsync();
+		await CompanyInfo.NotifyStateChangedAsync(this);
 	}
 }

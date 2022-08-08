@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{3236
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingState.Sample", "Samples\BlazingState.Sample\BlazingState.Sample.csproj", "{830482AC-0FEC-448F-9CD9-0D61A03C8664}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazingState.WebAssembly", "BlazingState.WebAssembly\BlazingState.WebAssembly.csproj", "{94D409BD-2CB1-44F5-A3C4-AC0197E05551}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{830482AC-0FEC-448F-9CD9-0D61A03C8664}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{830482AC-0FEC-448F-9CD9-0D61A03C8664}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{830482AC-0FEC-448F-9CD9-0D61A03C8664}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94D409BD-2CB1-44F5-A3C4-AC0197E05551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94D409BD-2CB1-44F5-A3C4-AC0197E05551}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94D409BD-2CB1-44F5-A3C4-AC0197E05551}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94D409BD-2CB1-44F5-A3C4-AC0197E05551}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

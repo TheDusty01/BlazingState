@@ -6,6 +6,8 @@ You can use this library for any project, not just with Blazor.
 ## Setup
 Download the latest release from [NuGet](https://www.nuget.org/packages/BlazingState).
 
+TODO: TABLE
+
 ## Usage
 ### Registering state observers
 Start by registering your tracked type to your services.
@@ -18,18 +20,26 @@ public class MyData
     public string SomeString { get; set; }
 }
 
-// Registers a state observer of this type with no initial value
-builder.Services.AddStateObserver<MyData>();
+// Register BlazingState
+builder.Services.AddBlazingState()
+    // Registers a state observer of this type with no initial value
+    .AddStateObserver<MyData>();
+    // You can also initialize MyData with an initial value
+    .AddStateObserver<MyData>(new MyData());
+    // And even with an implementation factory
+    .AddStateObserver<MyData>(sp =>
+    {
+        var service = sp.GetRequiredService<SomeOtherService>();
+        return new MyData { SomeString = service.SomeText };
+    });
+```
 
-// You can also initialize MyData with an initial value
-builder.Services.AddStateObserver<MyData>(new MyData());
-
-// And even with an implementation factory
-builder.Services.AddStateObserver<MyData>(sp =>
-{
-    var service = sp.GetRequiredService<SomeOtherService>();
-    return new MyData { SomeString = service.SomeText };
-});
+For AutoState (WebAssembly only):
+```csharp
+// Register BlazingState
+builder.Services.AddBlazingState()
+    .AddAutoState() // Add this before adding any state observer
+    .AddStateObserver<MyData>();
 ```
 
 If you don't use DI or another DI framework you can also manually instantiate your state observers:
@@ -40,11 +50,13 @@ var myStateObserver = new StateObserver<MyData>();
 var myStateObserver = new StateObserver<MyData>(initialValue);
 ```
 
-### Reading the value from state observers
+### Subscribing/Unsubscribing from state changes
 Add the following property to your razor component (or if using a normal class, just use normal di):
 ```csharp
 [Inject]
 protected StateObserver<MyData> MyData { get; set; } = null!;
+// or
+@inject StateObserver<MyData> MyData
 ```
 
 Subscribe using the ``OnParametersSet`` lifecycle event in Blazor (or use the ctor for normal classes):
@@ -67,6 +79,16 @@ protected override void OnParametersSet()
 }
 ```
 
+For AutoState (WebAssembly only): \
+You only need to add the ``AutoStateAttribute`` and the state observer to the class. That's it!
+```csharp
+@attribute [AutoState]
+@inject StateObserver<MyData> MyData;
+@code {
+    // ..
+}
+```
+
 You don't have to unsubscribe from the event, as soon as the GC collects the instance, the event is removed. \
 If you really need the memory you should implement ``IDisposable`` and remove the event by yourself in the dispose method to cleanup resources immediately but that's not needed. An alternative would be to call ``GC.Collect()``, as that forces the GC to perform a collection which removes all unused events but I wouldn't recommend this.
 ```csharp
@@ -76,7 +98,7 @@ public void Dispose()
 }
 ```
 
-Display the value:
+### Reading/displaying the value
 ```xml
 <p>Current value of MyData: @MyData.Value.SomeString</p>
 ```
@@ -89,6 +111,8 @@ To update the current value of the observer you can just set the ``Value`` prope
 public void UpdateValue(string newValue)
 {
     MyData.Value = new MyData { SomeString = newValue };
+    // Faster way (skips notifying this instance again)
+    MyData.SetValueAsync(new MyData { SomeString = newValue }, this);
 }
 ```
 That's all! All subscribers are recieving your update automatically.
@@ -98,7 +122,7 @@ You can also just set some properties of the value instance and then manually no
 public async Task UpdateValue(string newValue)
 {
     MyData.Value.SomeString = newValue;
-    await MyData.NotifyStateChangedAsync();
+    await MyData.NotifyStateChangedAsync(this); // Passing "this" skips notifying this instance again
 }
 ```
 This way you don't have to reallocate the object every time which can build up a lot of pressure on GC with bigger objects.
@@ -107,21 +131,21 @@ As mentioned at the start you can use an implementation factory for initializati
 For that use case you could create your own component like ``InitMyData`` with following code:
 ```csharp
 @code {
-	[Inject]
-	protected StateObserver<MyData> MyData { get; set; } = null!;
+    [Inject]
+    protected StateObserver<MyData> MyData { get; set; } = null!;
 
-	protected override async Task OnParametersSetAsync()
-	{
-		// Getting data from server
-		var name = await GetName();
-		MyData.Value = new MyData { SomeString = name };
-	}
+    protected override async Task OnParametersSetAsync()
+    {
+        // Getting data from server
+        var name = await GetName();
+        MyData.Value = new MyData { SomeString = name };
+    }
 
-	private async Task<string> GetName()
-	{
-		await Task.Delay(2000);
-		return "Name from Server";
-	}
+    private async Task<string> GetName()
+    {
+        await Task.Delay(2000);
+        return "Name from Server";
+    }
 }
 ```
 

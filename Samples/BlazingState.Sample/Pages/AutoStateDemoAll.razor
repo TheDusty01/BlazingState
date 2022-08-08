@@ -1,0 +1,31 @@
+﻿@page "/AutoStateDemoAll"
+
+<PageTitle>AutoStateDemo</PageTitle>
+
+<h1>AutoStateDemo</h1>
+
+<p>Company Name: @CompanyInfo.Value?.Name</p>
+<ManageCompanyInfo />
+
+<hr />
+<p>Account Name: @Account.Value?.Name</p>
+<ManageAccount />
+
+@*@inject IStateObserver<Account> Account;*@
+@attribute [AutoState]
+@code {
+	[Inject] protected IStateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+	[Inject] protected IStateObserver<Account> Account { get; set; } = null!;
+
+	protected new void StateHasChanged()
+	{
+		Console.WriteLine("[AutoStateDemoAll] State changed");
+		base.StateHasChanged();
+	}
+
+	~AutoStateDemoAll()
+	{
+		Console.WriteLine("[AutoStateDemoAll] Finalizer");
+	}
+
+}

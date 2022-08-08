@@ -20,11 +20,15 @@ namespace BlazingState
             return Callbacks.Remove(instance);
         }
 
-        public async Task InvokeAsync()
+        public async Task InvokeAsync(object? calledByInstance = null)
         {
             HashSet<Task> tasks = new HashSet<Task>();
             foreach ((var instance, var callback) in Callbacks)
             {
+                // Do not notify calling instance again
+                if (ReferenceEquals(instance, calledByInstance))
+                    continue;
+
                 tasks.Add(callback.Invoke());
             }
 

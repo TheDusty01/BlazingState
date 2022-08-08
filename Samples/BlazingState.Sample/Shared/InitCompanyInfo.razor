@@ -1,6 +1,6 @@
 ﻿@code {
 	[Inject]
-	protected StateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
+	protected IStateObserver<CompanyInfo> CompanyInfo { get; set; } = null!;
 
 	protected override async Task OnParametersSetAsync()
 	{

@@ -1,29 +1,35 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
 namespace BlazingState
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddStateObserver<T>(this IServiceCollection services)
+        public static IBlazingStateBuilder AddBlazingState(this IServiceCollection services)
         {
-            services.AddScoped<StateObserver<T>>();
-
-            return services;
+            return new BlazingStateBuilder(services);
         }
 
-        public static IServiceCollection AddStateObserver<T>(this IServiceCollection services, T initialValue)
+        public static IBlazingStateBuilder AddStateObserver<T>(this IBlazingStateBuilder builder)
         {
-            services.AddScoped(sp => new StateObserver<T>(initialValue));
+            builder.Services.AddScoped<IStateObserver<T>, StateObserver<T>>(sp => new StateObserver<T>(sp.GetService<IAutoStateManager>()));
 
-            return services;
+            return builder;
         }
 
-        public static IServiceCollection AddStateObserver<T>(this IServiceCollection services, Func<IServiceProvider, T> implementationFactory)
+        public static IBlazingStateBuilder AddStateObserver<T>(this IBlazingStateBuilder builder, T initialValue)
         {
-            services.AddScoped(sp => new StateObserver<T>(implementationFactory(sp)));
+            builder.Services.AddScoped<IStateObserver<T>, StateObserver<T>>(sp => new StateObserver<T>(sp.GetService<IAutoStateManager>(), initialValue));
 
-            return services;
+            return builder;
+        }
+
+        public static IBlazingStateBuilder AddStateObserver<T>(this IBlazingStateBuilder builder, Func<IServiceProvider, T> implementationFactory)
+        {
+            builder.Services.AddScoped<IStateObserver<T>, StateObserver<T>> (sp => new StateObserver<T>(sp.GetService<IAutoStateManager>(), implementationFactory(sp)));
+
+            return builder;
         }
     }
 }
