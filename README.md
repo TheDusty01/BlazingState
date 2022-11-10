@@ -8,8 +8,8 @@ Download the latest releases from NuGet.
 
 | NuGet Package                                                                       | Version | Info                                   |
 |-------------------------------------------------------------------------------------|---------|----------------------------------------|
-| [BlazingState](https://www.nuget.org/packages/BlazingState)                         | 6.1.0   |                                        |
-| [BlazingState.WebAssembly](https://www.nuget.org/packages/BlazingState.WebAssembly) | 6.1.0   | Needed for AutoState (more info below) |
+| [BlazingState](https://www.nuget.org/packages/BlazingState)                         | 7.0.0   |                                        |
+| [BlazingState.WebAssembly](https://www.nuget.org/packages/BlazingState.WebAssembly) | 7.0.0   | Needed for AutoState (more info below) |
 
 
 ### AutoState
