@@ -5,8 +5,37 @@ namespace BlazingState
 {
     /// <summary>
     /// This type is used for framework internals. Use <see cref="IStateObserver{T}"/> instead.
+    /// You may use this interface to managing state as non-generic too.
     /// </summary>
-    public interface INonGenericStateObserver { }
+    public interface INonGenericStateObserver
+    {
+        /// <summary>
+        /// Notifies all components that the state changed.
+        /// Waits for all components to finish rerendering.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        public Task NotifyStateChangedAsync(object? instance = null);
+        /// <summary>
+        /// Registers callback, if state has been changed
+        /// </summary>
+        /// <param name="instance">Context object. To prevent double call of callback</param>
+        /// <param name="callback">Callback function. For example StateHasChanged</param>
+        public void Register(object instance, Action callback);
+        /// <summary>
+        /// Registers callback, if state has been changed
+        /// </summary>
+        /// <param name="instance">Context object. To prevent double call of callback</param>
+        /// <param name="callback">Async callback function</param>
+        public void Register(object instance, Func<Task> callback);
+        /// <summary>
+        /// Unsubscribes a state from context (component) instance.
+        /// </summary>
+        /// <param name="instance">Context (component) instance</param>
+        /// <returns></returns>
+        public bool Unregister(object instance);
+        public int GetSubscriberCount();
+    }
 
     public interface IStateObserver<T> : INonGenericStateObserver
     {
@@ -32,18 +61,5 @@ namespace BlazingState
         /// <param name="instance"></param>
         /// <returns></returns>
         public Task SetValueAsync(T newValue, object? instance = null);
-
-        /// <summary>
-        /// Notifies all components that the state changed.
-        /// Waits for all components to finish rerendering.
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <returns></returns>
-        public Task NotifyStateChangedAsync(object? instance = null);
-
-        public void Register(object instance, Action callback);
-        public void Register(object instance, Func<Task> callback);
-        public bool Unregister(object instance);
-        public int GetSubscriberCount();
     }
 }
